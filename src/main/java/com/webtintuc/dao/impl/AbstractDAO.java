@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +18,7 @@ public class AbstractDAO<T> implements GenericDAO<T> {
 
 	public Connection getConnection() {
 		try {
-			Class.forName("com.mysql.cj.jdbc.Driver");
+			Class.forName("com.mysql.jdbc.Driver");
 			String url = "jdbc:mysql://localhost:3306/newservletwebtintuc";
 			String user = "root";
 			String password = "4321";
@@ -37,61 +38,47 @@ public class AbstractDAO<T> implements GenericDAO<T> {
 		try {
 			connection = getConnection();
 			statement = connection.prepareStatement(sql);
-			setParameter(statement, parameters );
+			setParameter(statement, parameters);
 			resultSet = statement.executeQuery();
-			while(resultSet.next()) {
+			while (resultSet.next()) {
 				results.add(rowMapper.mapRow(resultSet));
 			}
 			return results;
 		} catch (SQLException e) {
 			return null;
 		} finally {
-			
 			try {
-				
-				if(connection != null)
-				{
+				if (connection != null) {
 					connection.close();
 				}
-				if(statement != null)
-				{
+				if (statement != null) {
 					statement.close();
 				}
-				if(resultSet != null)
-				{
+				if (resultSet != null) {
 					resultSet.close();
 				}
-				
-			} catch (Exception e) {
+			} catch (SQLException e) {
 				return null;
 			}
-			
 		}
-		
-	
 	}
 
 	private void setParameter(PreparedStatement statement, Object... parameters) {
 		try {
-			
-			for(int i = 0; i <parameters.length ; i++)
-			{
-				Object parameter  = parameters[i];
-				int index = i+1;
-				if(parameter instanceof Long)
-				{
-					statement.setLong(index, (Long)parameter);
-				} else if(parameter instanceof String) {
+			for (int i = 0; i < parameters.length; i++) {
+				Object parameter = parameters[i];
+				int index = i + 1;
+				if (parameter instanceof Long) {
+					statement.setLong(index, (Long) parameter);
+				} else if (parameter instanceof String) {
 					statement.setString(index, (String) parameter);
 				} else if (parameter instanceof Integer) {
-					statement.setInt(index, (Integer)parameter);
-				}  else if (parameter instanceof Timestamp) {
-					statement.setTimestamp(index, (Timestamp)parameter);
+					statement.setInt(index, (Integer) parameter);
+				} else if (parameter instanceof Timestamp) {
+					statement.setTimestamp(index, (Timestamp) parameter);
 				}
 			}
-			
-		} catch (SQLException e)
-		{
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
@@ -107,31 +94,23 @@ public class AbstractDAO<T> implements GenericDAO<T> {
 			setParameter(statement, parameters);
 			statement.executeUpdate();
 			connection.commit();
-		} catch (SQLException e)
-		{
-			if (connection != null)
-			{
+		} catch (SQLException e) {
+			if (connection != null) {
 				try {
 					connection.rollback();
-				} catch (SQLException e1)
-				{
+				} catch (SQLException e1) {
 					e1.printStackTrace();
 				}
 			}
-		} finally
-		{
+		} finally {
 			try {
-				
-				if(connection != null)
-				{
+				if (connection != null) {
 					connection.close();
 				}
-				if(statement != null)
-				{
+				if (statement != null) {
 					statement.close();
 				}
-				
-			} catch (Exception e2) {
+			} catch (SQLException e2) {
 				e2.printStackTrace();
 			}
 		}
@@ -142,7 +121,6 @@ public class AbstractDAO<T> implements GenericDAO<T> {
 		Connection connection = null;
 		PreparedStatement statement = null;
 		ResultSet resultSet = null;
-		
 		try {
 			Long id = null;
 			connection = getConnection();
@@ -151,44 +129,36 @@ public class AbstractDAO<T> implements GenericDAO<T> {
 			setParameter(statement, parameters);
 			statement.executeUpdate();
 			resultSet = statement.getGeneratedKeys();
-			if(resultSet.next())
-			{
+			if (resultSet.next()) {
 				id = resultSet.getLong(1);
 			}
 			connection.commit();
 			return id;
-		} catch (SQLException e)
-		{
-			if (connection != null)
-			{
+		} catch (SQLException e) {
+			if (connection != null) {
 				try {
 					connection.rollback();
-				} catch (SQLException e1)
-				{
+				} catch (SQLException e1) {
 					e1.printStackTrace();
 				}
 			}
-		} finally
-		{
+		} finally {
 			try {
-				
-				if(connection != null)
-				{
+				if (connection != null) {
 					connection.close();
 				}
-				if(statement != null)
-				{
+				if (statement != null) {
 					statement.close();
 				}
-				if(resultSet != null)
-				{
+				if (resultSet != null) {
 					resultSet.close();
 				}
-			} catch (Exception e2) {
+			} catch (SQLException e2) {
 				e2.printStackTrace();
 			}
 		}
 		return null;
 	}
+
 }
 		
