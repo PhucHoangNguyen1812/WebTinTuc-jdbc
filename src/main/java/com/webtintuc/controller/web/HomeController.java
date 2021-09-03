@@ -16,7 +16,7 @@ import com.webtintuc.service.ICategoryService;
 
 
 
-@WebServlet(urlPatterns = {"/trang-chu"})
+@WebServlet(urlPatterns = {"/trang-chu","/dang-nhap"})
 public class HomeController extends HttpServlet {
 	
 	@Inject

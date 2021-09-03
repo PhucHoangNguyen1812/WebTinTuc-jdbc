@@ -7,6 +7,7 @@ import javax.inject.Inject;
 
 import com.webtintuc.dao.INewDAO;
 import com.webtintuc.model.NewModel;
+import com.webtintuc.paging.Pageble;
 import com.webtintuc.service.INewService;
 
 public class NewService implements INewService {
@@ -45,6 +46,16 @@ public class NewService implements INewService {
 		{
 			newDao.delete(id);
 		}
+	}
+
+	@Override
+	public List<NewModel> findAll(Pageble pageble) {
+		return newDao.findAll(pageble);
+	}
+
+	@Override
+	public int getTotalItem() {
+		return newDao.getTotalItem();
 	}
 
 	

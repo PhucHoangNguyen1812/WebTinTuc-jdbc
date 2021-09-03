@@ -1,6 +1,6 @@
 package com.webtintuc.model;
 
-public class CommentModel extends AbstractModel {
+public class CommentModel extends AbstractModel<CategoryModel> {
 
 	private String content;
 	private Long userId;

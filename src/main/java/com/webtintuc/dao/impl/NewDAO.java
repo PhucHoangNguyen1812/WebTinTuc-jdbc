@@ -5,12 +5,12 @@ import java.util.List;
 import com.webtintuc.dao.INewDAO;
 import com.webtintuc.mapper.NewMapper;
 import com.webtintuc.model.NewModel;
+import com.webtintuc.paging.Pageble;
 
 public class NewDAO extends AbstractDAO<NewModel> implements INewDAO {
 
 	@Override
 	public List<NewModel> findByCategoryId(Long categoryId) {
-		
 		String sql = "SELECT * FROM news WHERE categoryid = ?";
 		return query(sql, new NewMapper(), categoryId);
 	}
@@ -47,6 +47,28 @@ public class NewDAO extends AbstractDAO<NewModel> implements INewDAO {
 	public void delete(long id) {
 		String sql = "DELETE FROM news WHERE id = ?";
 		update(sql,id);
+	}
+
+	@Override
+	public List<NewModel> findAll(Pageble pageble) {
+		//String sql = "SELECT * FROM news LIMIT ?, ?";
+		StringBuilder sql = new StringBuilder("SELECT * FROM news");
+		if(pageble.getSorter() != null)
+		{
+			sql.append(" ORDER BY "+pageble.getSorter().getSortName()+" "+pageble.getSorter().getSortBy()+"");
+		}
+		if(pageble.getOffset() != null && pageble.getLimit() != null)
+		{
+			sql.append(" LIMIT "+pageble.getOffset()+", "+pageble.getLimit()+"");
+			
+		} 
+		return query(sql.toString(), new NewMapper());
+	}
+
+	@Override
+	public int getTotalItem() {
+		String sql = "SELECT count(*) FROM news";
+		return count(sql);
 	}
 
 }

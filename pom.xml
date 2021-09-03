@@ -50,7 +50,7 @@
 			<artifactId>weld-servlet</artifactId>
 			<version>${weld.servlet.version}</version>
 		</dependency>
-		
+
 		<!-- json -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
@@ -79,7 +79,12 @@
 			<version>1.9.13</version>
 		</dependency>
 		<!--end json -->
-		
+
+		<dependency>
+			<groupId>commons-beanutils</groupId>
+			<artifactId>commons-beanutils</artifactId>
+			<version>1.9.4</version>
+		</dependency>
 	</dependencies>
 
 	<build>
