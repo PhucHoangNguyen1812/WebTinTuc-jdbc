@@ -14,6 +14,7 @@ import com.webtintuc.constant.SystemConstant;
 import com.webtintuc.model.NewModel;
 import com.webtintuc.paging.PageRequest;
 import com.webtintuc.paging.Pageble;
+import com.webtintuc.service.ICategoryService;
 import com.webtintuc.service.INewService;
 import com.webtintuc.sort.Sorter;
 import com.webtintuc.utils.FormUtil;
@@ -26,15 +27,34 @@ public class NewController extends HttpServlet {
 	@Inject
 	private INewService newService;
 	
+	@Inject
+	private ICategoryService categoryService;
+	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		NewModel model = FormUtil.toModel(NewModel.class, request);
-		Pageble pageble = new PageRequest(model.getPage(), model.getMaxPageItem(), new Sorter(model.getSortName(), model.getSortBy()));
-		model.setLists(newService.findAll(pageble));
-		model.setTotalItem(newService.getTotalItem());
-		model.setTotalPage((int) Math.ceil((double) model.getTotalItem() / model.getMaxPageItem()));
+		String view = "";
+		if(model.getType().equals(SystemConstant.LIST))
+		{
+			Pageble pageble = new PageRequest(model.getPage(), model.getMaxPageItem(), new Sorter(model.getSortName(), model.getSortBy()));
+			model.setLists(newService.findAll(pageble));
+			model.setTotalItem(newService.getTotalItem());
+			model.setTotalPage((int) Math.ceil((double) model.getTotalItem() / model.getMaxPageItem()));
+			view ="view/admin/new/list.jsp";
+		} else if (model.getType().equals(SystemConstant.EDIT)) {
+			
+			if(model.getId() != null)
+			{
+				model = newService.findOne(model.getId());
+			} else {
+				
+			}
+			request.setAttribute("categories", categoryService.findAll());
+			view ="view/admin/new/edit.jsp";	
+		}
 		request.setAttribute(SystemConstant.MODEL, model);
-		RequestDispatcher rd =  request.getRequestDispatcher("view/admin/new/list.jsp");
+		RequestDispatcher rd =  request.getRequestDispatcher(view);
 		rd.forward(request, response);
+		
 	}
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

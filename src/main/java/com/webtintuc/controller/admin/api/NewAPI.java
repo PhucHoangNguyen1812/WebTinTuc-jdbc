@@ -11,8 +11,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.webtintuc.model.NewModel;
+import com.webtintuc.model.UserModel;
 import com.webtintuc.service.INewService;
 import com.webtintuc.utils.HttpUtil;
+import com.webtintuc.utils.SessionUtil;
 
 
 @WebServlet(urlPatterns = {"/api-admin-new"})
@@ -29,6 +31,7 @@ public class NewAPI extends HttpServlet {
 		request.setCharacterEncoding("UTF-8");
 		response.setContentType("application/json");
 		NewModel newModel = HttpUtil.of(request.getReader()).toModel(NewModel.class);
+		newModel.setCreatedBy(( (UserModel) SessionUtil.getInstance().getValue(request, "USERMODEL")).getUserName());
 		newModel = newService.save(newModel);
 		mapper.writeValue(response.getOutputStream(), newModel);
 	}
@@ -39,6 +42,7 @@ public class NewAPI extends HttpServlet {
 		request.setCharacterEncoding("UTF-8");
 		response.setContentType("application/json");
 		NewModel updateNew = HttpUtil.of(request.getReader()).toModel(NewModel.class);
+		updateNew.setModifiedBy(( (UserModel) SessionUtil.getInstance().getValue(request, "USERMODEL")).getUserName());
 		updateNew = newService.update(updateNew);
 		mapper.writeValue(response.getOutputStream(), updateNew);
 	}

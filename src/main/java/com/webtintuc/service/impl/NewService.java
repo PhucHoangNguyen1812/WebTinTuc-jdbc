@@ -5,7 +5,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import com.webtintuc.dao.ICategoryDAO;
 import com.webtintuc.dao.INewDAO;
+import com.webtintuc.model.CategoryModel;
 import com.webtintuc.model.NewModel;
 import com.webtintuc.paging.Pageble;
 import com.webtintuc.service.INewService;
@@ -14,6 +16,9 @@ public class NewService implements INewService {
 
 	@Inject 
 	private INewDAO newDao;
+	
+	@Inject 
+	private ICategoryDAO categoryDAO;
 
 	@Override
 	public List<NewModel> findByCategoryId(Long categoryId) {
@@ -24,7 +29,8 @@ public class NewService implements INewService {
 	@Override
 	public NewModel save(NewModel newModel) {
 		newModel.setCreatedDate(new Timestamp(System.currentTimeMillis()));;
-		newModel.setCreatedBy("");
+		CategoryModel category = categoryDAO.findOneByCode(newModel.getCategoryCode());
+		newModel.setCategoryId(category.getId());
 		Long newId = newDao.save(newModel);
 		return newDao.findOne(newId);
 	}
@@ -35,7 +41,8 @@ public class NewService implements INewService {
 		updateNew.setCreatedDate(oldNew.getCreatedDate());
 		updateNew.setCreatedBy(oldNew.getCreatedBy());
 		updateNew.setModifiedDate(new Timestamp(System.currentTimeMillis()));
-		updateNew.setModifiedBy("");
+		CategoryModel category = categoryDAO.findOneByCode(updateNew.getCategoryCode());
+		updateNew.setCategoryId(category.getId());
 		newDao.update(updateNew);
 		return newDao.findOne(updateNew.getId());
 	}
@@ -56,6 +63,14 @@ public class NewService implements INewService {
 	@Override
 	public int getTotalItem() {
 		return newDao.getTotalItem();
+	}
+
+	@Override
+	public NewModel findOne(long id) {
+		NewModel newModel = newDao.findOne(id);
+		CategoryModel categoryModel = categoryDAO.findOne(newModel.getCategoryId());
+		newModel.setCategoryCode(categoryModel.getCode());
+		return newModel;
 	}
 
 	

@@ -9,18 +9,25 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import com.webtintuc.dao.GenericDAO;
 import com.webtintuc.mapper.RowMapper;
 
 public class AbstractDAO<T> implements GenericDAO<T> {
 
+	ResourceBundle resourceBundle = ResourceBundle.getBundle("db");
+	
 	public Connection getConnection() {
 		try {
-			Class.forName("com.mysql.jdbc.Driver");
+			/*Class.forName("com.mysql.jdbc.Driver");
 			String url = "jdbc:mysql://localhost:3306/newservletwebtintuc";
 			String user = "root";
-			String password = "4321";
+			String password = "4321";*/
+			Class.forName(resourceBundle.getString("driverName"));
+			String url = resourceBundle.getString("url");
+			String user = resourceBundle.getString("user");
+			String password = resourceBundle.getString("password");
 			return DriverManager.getConnection(url, user, password);
 		} catch (ClassNotFoundException | SQLException e) {
 			return null;
@@ -161,7 +168,6 @@ public class AbstractDAO<T> implements GenericDAO<T> {
 
 	@Override
 	public int count(String sql, Object... parameters) {
-		
 		Connection connection = null;
 		PreparedStatement statement = null;
 		ResultSet resultSet = null;
@@ -174,7 +180,7 @@ public class AbstractDAO<T> implements GenericDAO<T> {
 			while (resultSet.next()) {
 				count = resultSet.getInt(1);
 			}
-			return count ;
+			return count;
 		} catch (SQLException e) {
 			return 0;
 		} finally {
@@ -189,7 +195,7 @@ public class AbstractDAO<T> implements GenericDAO<T> {
 					resultSet.close();
 				}
 			} catch (SQLException e) {
-				return 0 ;
+				return 0;
 			}
 		}
 	}
