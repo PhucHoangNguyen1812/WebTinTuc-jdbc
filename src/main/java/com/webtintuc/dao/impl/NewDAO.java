@@ -2,6 +2,8 @@ package com.webtintuc.dao.impl;
 
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.webtintuc.dao.INewDAO;
 import com.webtintuc.mapper.NewMapper;
 import com.webtintuc.model.NewModel;
@@ -53,7 +55,7 @@ public class NewDAO extends AbstractDAO<NewModel> implements INewDAO {
 	public List<NewModel> findAll(Pageble pageble) {
 		//String sql = "SELECT * FROM news LIMIT ?, ?";
 		StringBuilder sql = new StringBuilder("SELECT * FROM news");
-		if(pageble.getSorter() != null)
+		if(pageble.getSorter() != null && StringUtils.isNotBlank(pageble.getSorter().getSortName()) && StringUtils.isNotBlank(pageble.getSorter().getSortBy()))
 		{
 			sql.append(" ORDER BY "+pageble.getSorter().getSortName()+" "+pageble.getSorter().getSortBy()+"");
 		}

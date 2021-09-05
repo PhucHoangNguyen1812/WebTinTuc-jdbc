@@ -18,6 +18,7 @@ import com.webtintuc.service.ICategoryService;
 import com.webtintuc.service.INewService;
 import com.webtintuc.sort.Sorter;
 import com.webtintuc.utils.FormUtil;
+import com.webtintuc.utils.MessageUtil;
 
 @WebServlet(urlPatterns = {"/admin-new"})
 public class NewController extends HttpServlet {
@@ -51,6 +52,7 @@ public class NewController extends HttpServlet {
 			request.setAttribute("categories", categoryService.findAll());
 			view ="view/admin/new/edit.jsp";	
 		}
+		MessageUtil.showMessage(request);
 		request.setAttribute(SystemConstant.MODEL, model);
 		RequestDispatcher rd =  request.getRequestDispatcher(view);
 		rd.forward(request, response);

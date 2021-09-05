@@ -104,6 +104,12 @@
     </div>
 </div>
 <script type="text/javascript">
+
+    var editor = '';
+    $(document).ready(function () {
+        editor = CKEDITOR.replace('content');
+    });
+
 	$('#btnAddOrUpdateNew').click(function(e) {
 		e.preventDefault();
         var data = {};
@@ -111,6 +117,7 @@
         $.each(formData, function (i, v) {
            data[""+v.name+""] = v.value; 
         });
+        data["content"] = editor.getData();
         var id = $('#id').val();
         if(id == "")
         {
@@ -127,10 +134,10 @@
             data: JSON.stringify(data),
             dataType: 'json',
             success: function (result) {
-            	console.log(result);
+            	window.location.href = "${NewURL}?type=edit&id="+result.id+"&message=insert_success";
             },
             error: function (error) {
-            	console.log(error);
+            	window.location.href = "${NewURL}?type=list&maxPageItem=2&page=1&message=error_system";
             }
         });
     }
@@ -142,10 +149,10 @@
             data: JSON.stringify(data),
             dataType: 'json',
             success: function (result) {
-            	console.log(result);
+            	window.location.href = "${NewURL}?type=edit&id="+result.id+"&message=update_success";
             },
             error: function (error) {
-            	console.log(error);
+            	window.location.href = "${NewURL}?type=list&maxPageItem=2&page=1&message=error_system";
             }
         });
     }
